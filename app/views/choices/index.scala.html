@@ -1,0 +1,23 @@
+@(choices: Seq[Db.Choice])
+
+@main("选择题") {
+<table class="table table-bordered table-striped table-hover">
+	<caption>选择题</caption>
+	<thead>
+		<tr>
+			<th>题目</th>
+			<th>选项</th>
+			<th>答案</th>
+		</tr>
+	</thead>
+	<tbody>
+		@choices.map {c =>
+		<tr>
+			<td>@c.title</td>
+			<td>@c.options</td>
+			<td>@c.answer</td>
+		</tr>
+		} 
+	</tbody>
+</table>
+}

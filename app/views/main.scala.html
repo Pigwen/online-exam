@@ -1,0 +1,63 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<title>@title</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+</head>
+<body>
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-fixed-top">
+		<div class="container">
+			<button type="button" class="navbar-toggle" data-toggle="collapse"
+				data-target=".nav-collapse">
+				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">Online Exam System</a>
+			<div class="nav-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown">试题管理 <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">选择题</a></li>
+							<li><a href="#">判断题</a></li>
+							<li><a href="#">阅读题</a></li>
+							<li class="divider"></li>
+							<li class="nav-header">Nav header</li>
+							<li><a href="#">Separated link</a></li>
+							<li><a href="#">One more separated link</a></li>
+						</ul></li>
+				</ul>
+				<ul class="nav navbar-nav pull-right">
+					<li><a href="/navbar/">Default</a></li>
+					<li><a href="/navbar-static-top/">Static top</a></li>
+					<li class="active"><a href="/navbar-fixed-top/">Fixed top</a></li>
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+
+	<div class="container">
+		@content
+	</div>
+
+	<div>
+		<div class="container">
+			<p class="text-muted credit">
+				<a href="http://maodian.org">毛掌柜</a> 出品
+			</p>
+		</div>
+	</div>
+	
+	<!-- Bootstrap core JavaScript ================================================== -->
+	<script src="@routes.Assets.at("javascripts/jquery-2.0.3.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
+</body>
+</html>
