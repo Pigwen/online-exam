@@ -6,6 +6,10 @@ import models.Db._
 
 object Choices extends Controller {
   def index = Action {
-    Ok(views.html.choices.index(Choice.findAll))
+    Ok(views.html.choices.index(ChoicesTb.findAll))
+  }
+  
+  def createForm = Action {
+    Ok(views.html.choices.form())
   }
 }

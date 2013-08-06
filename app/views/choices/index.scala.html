@@ -1,6 +1,10 @@
 @(choices: Seq[Db.Choice])
 
 @main("选择题") {
+<div class="btn-group">
+  <a type="button" class="btn btn-default" href="@routes.Choices.createForm">创建</a>
+</div>
+
 <table class="table table-bordered table-striped table-hover">
 	<caption>选择题</caption>
 	<thead>
@@ -14,7 +18,7 @@
 		@choices.map {c =>
 		<tr>
 			<td>@c.title</td>
-			<td>@c.options</td>
+			<td></td>
 			<td>@c.answer</td>
 		</tr>
 		} 

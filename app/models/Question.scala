@@ -5,23 +5,28 @@ import scala.slick.driver.MySQLDriver.simple._
 import play.api.db._
 
 object Db {
-  sealed trait Question {
-    def id: Column[Long]
-  }
-
   private lazy val database = Database.forDataSource(DB.getDataSource())
-  
-  case class Choice(id: Long, title: String, options: String, answer: String)
-  object Choice extends Table[(Long, String, String, String)]("CHOICES") with Question {
+
+  case class Choice(id: Long, title: String, answer: String)
+  object ChoicesTb extends Table[(Long, String, String)]("CHOICES") {
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
-    def title = column[String]("TITLE")
-    def options = column[String]("OPTIONS")
-    def answer = column[String]("ANSWER")
-    def * = id ~ title ~ options ~ answer
+    def title = column[String]("TITLE", O.NotNull)
+    def answer = column[String]("ANSWER", O.NotNull)
+    def * = id ~ title ~ answer
 
     def findAll = Db.database.withSession { implicit db: Session =>
-      Choice.map(c => c.id ~ c.title ~ c.options ~ c.answer).list.map(t => Choice(t._1, t._2, t._3, t._4))
+      ChoicesTb.map(c => c.id ~ c.title ~ c.answer).list.map(t => Choice(t._1, t._2, t._3))
     }
+  }
+
+  case class Option(id: Long, description: String)
+  object OptionsTb extends Table[(Long, String, Long)]("OPTIONS") {
+    def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
+    def description = column[String]("DESCRIPTION", O.NotNull)
+    def subjectID = column[Long]("SUBJECT_ID", O.NotNull)
+    def subject = foreignKey("SUBJECT_FK", subjectID, ChoicesTb)(_.id)
+    def * = id ~ description ~ subjectID
+    def idx = index("idx_a", (subjectID, description), unique = true)
   }
 
   private val url = "jdbc:mysql://localhost/exam?useUnicode=true&characterEncoding=utf-8"
@@ -30,6 +35,6 @@ object Db {
   private val password = ""
   def createTable = Database.forURL(url, user = user, password = password, driver = driver) withSession {
     import Database.threadLocalSession
-    Choice.ddl.create
+    ChoicesTb.ddl ++ OptionsTb.ddl create
   }
 }
