@@ -7,15 +7,22 @@ import play.api.db._
 object Db {
   private lazy val database = Database.forDataSource(DB.getDataSource())
 
-  case class Subject(id: Option[Long], title: String, answer: String)
-  object SubjectTB extends Table[(Long, String, String)]("SUBJECTS") {
+  case class Subject(id: Option[Long] = None, title: String = "", answer: String = "")
+  object SubjectTB extends Table[Subject]("SUBJECTS") {
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
     def title = column[String]("TITLE", O.NotNull)
     def answer = column[String]("ANSWER", O.NotNull)
-    def * = id ~ title ~ answer
+    def * = id.? ~ title ~ answer <> (Subject, Subject.unapply _)
 
     def findAll = Db.database.withSession { implicit db: Session =>
       SubjectTB.map(c => c.id ~ c.title ~ c.answer).list.map(t => Subject(Some(t._1), t._2, t._3))
+    }
+
+    def insert(s: Subject) = {
+      val projection = title ~ answer <> ({ t => Subject(None, t._1, t._2) }, { s: Subject => Some((s.title, s.answer)) })
+      Db.database.withTransaction { implicit db: Session =>
+        projection insert s
+      }
     }
   }
 

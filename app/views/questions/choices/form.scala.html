@@ -1,20 +1,23 @@
+@(subject: Db.Subject)
+
 @main("创建选择题") {
 <form action="@routes.Choices.create" class="form-horizontal" method="post">
+	<input type="hidden" name="id" value="@subject.id"/>
   <div class="form-group">
     <label for="title" class="col-lg-2 control-label">题目</label>
     <div class="col-lg-10">
-      <textarea id="title" name="title" class="form-control" rows="3"></textarea>
+      <textarea id="title" name="title" class="form-control" rows="3" placeholder="题目">@subject.title</textarea>
     </div>
   </div>
   <div class="form-group">
-    <label for="inputPassword" class="col-lg-2 control-label">Password</label>
+    <label for="inputPassword" class="col-lg-2 control-label">答案</label>
     <div class="col-lg-10">
-      <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+      <input type="text" class="form-control" id="answer" name="answer" value="@subject.answer" placeholder="答案"/>
     </div>
   </div>
   <div class="form-group">
     <div class="col-lg-offset-2 col-lg-10">
-      <button type="submit" class="btn btn-default">Sign in</button>
+      <button type="submit" class="btn btn-default">创建</button>
     </div>
   </div>
 </form>
