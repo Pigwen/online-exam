@@ -18,12 +18,14 @@ object Choices extends Controller {
   }
 
   def createForm = Action { implicit request =>
-    Ok(views.html.questions.choices.form(Subject()))
+    Ok(views.html.questions.choices.form(form))
   }
 
   def create = Action { implicit request =>
     form.bindFromRequest.fold(
-      formWithError => BadRequest,
+      formWithError => {
+        Ok(views.html.questions.choices.form(formWithError))
+      },
       subject => {
         SubjectTB.insert(subject)
         Redirect(routes.Choices.index)
