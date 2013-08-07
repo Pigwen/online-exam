@@ -9,16 +9,16 @@ import views.html.defaultpages.badRequest
 
 object Choices extends Controller {
   private val form = Form(mapping(
-    "id" -> longNumber,
+    "id" -> optional(longNumber),
     "title" -> nonEmptyText(1),
-    "answer" -> nonEmptyText)(Choice.apply)(Choice.unapply))
+    "answer" -> nonEmptyText)(Subject.apply)(Subject.unapply))
 
   def index = Action {
-    Ok(views.html.choices.index(ChoicesTb.findAll))
+    Ok(views.html.questions.choices.index(SubjectTB.findAll))
   }
 
   def createForm = Action { implicit request =>
-    Ok(views.html.choices.form())
+    Ok(views.html.questions.choices.form())
   }
 
   def create = Action { implicit request =>

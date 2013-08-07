@@ -7,24 +7,24 @@ import play.api.db._
 object Db {
   private lazy val database = Database.forDataSource(DB.getDataSource())
 
-  case class Choice(id: Long, title: String, answer: String)
-  object ChoicesTb extends Table[(Long, String, String)]("CHOICES") {
+  case class Subject(id: Option[Long], title: String, answer: String)
+  object SubjectTB extends Table[(Long, String, String)]("SUBJECTS") {
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
     def title = column[String]("TITLE", O.NotNull)
     def answer = column[String]("ANSWER", O.NotNull)
     def * = id ~ title ~ answer
 
     def findAll = Db.database.withSession { implicit db: Session =>
-      ChoicesTb.map(c => c.id ~ c.title ~ c.answer).list.map(t => Choice(t._1, t._2, t._3))
+      SubjectTB.map(c => c.id ~ c.title ~ c.answer).list.map(t => Subject(Some(t._1), t._2, t._3))
     }
   }
 
-  case class Option(id: Long, description: String)
-  object OptionsTb extends Table[(Long, String, Long)]("OPTIONS") {
+  case class Choice(id: Option[Long], description: String)
+  object ChoiceTB extends Table[(Long, String, Long)]("CHOICES") {
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
     def description = column[String]("DESCRIPTION", O.NotNull)
     def subjectID = column[Long]("SUBJECT_ID", O.NotNull)
-    def subject = foreignKey("SUBJECT_FK", subjectID, ChoicesTb)(_.id)
+    def subject = foreignKey("SUBJECT_FK", subjectID, SubjectTB)(_.id)
     def * = id ~ description ~ subjectID
     def idx = index("idx_a", (subjectID, description), unique = true)
   }
@@ -35,6 +35,6 @@ object Db {
   private val password = ""
   def createTable = Database.forURL(url, user = user, password = password, driver = driver) withSession {
     import Database.threadLocalSession
-    ChoicesTb.ddl ++ OptionsTb.ddl create
+    SubjectTB.ddl ++ ChoiceTB.ddl create
   }
 }
