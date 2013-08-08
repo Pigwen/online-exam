@@ -11,7 +11,8 @@ object Choices extends Controller {
   private val form = Form(mapping(
     "id" -> optional(longNumber),
     "title" -> nonEmptyText(1),
-    "answer" -> nonEmptyText)(Subject.apply)(Subject.unapply))
+    "answer" -> nonEmptyText,
+    "options" -> list(mapping("desc" -> text)(Choice)(Choice.unapply)))(Subject.apply)(Subject.unapply))
 
   def index = Action {
     Ok(views.html.questions.choices.index(SubjectTB.findAll))
@@ -27,7 +28,7 @@ object Choices extends Controller {
         Ok(views.html.questions.choices.form(formWithError))
       },
       subject => {
-        SubjectTB.insert(subject)
+        SubjectTB.create(subject)
         Redirect(routes.Choices.index)
       })
   }
