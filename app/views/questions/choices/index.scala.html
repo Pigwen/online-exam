@@ -1,8 +1,6 @@
-@(choices: Seq[Db.Subject])
-
-@main("选择题") {
+@(choices: Seq[Db.Subject]) @main("选择题") {
 <div class="btn-group">
-  <a type="button" class="btn btn-default" href="@routes.Choices.createForm">创建</a>
+	<a type="button" class="btn btn-default" href="@routes.Choices.createForm">创建</a>
 </div>
 
 <table class="table table-bordered table-striped table-hover">
@@ -21,7 +19,21 @@
 			<td></td>
 			<td>@c.answer</td>
 		</tr>
-		} 
+		}
 	</tbody>
 </table>
+
+<div class="accordion" id="choices_container">
+	@for(c <- choices) {
+	<div class="accordion-group">
+		<div class="accordion-heading">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#choices_container"
+				href="#choice_@c.id">@c.title</a>
+		</div>
+		<div id="choice_@c.id" class="accordion-body collapse collapse">
+			<div class="accordion-inner">...</div>
+		</div>
+	</div>
+	}
+</div>
 }
