@@ -12,7 +12,9 @@ object Choices extends Controller {
     "id" -> optional(longNumber),
     "title" -> nonEmptyText(1),
     "answer" -> nonEmptyText,
-    "options" -> list(mapping("desc" -> text)(Choice)(Choice.unapply)))(Subject.apply)(Subject.unapply))
+    "options" -> list(mapping(
+        "id" -> optional(longNumber),
+        "desc" -> text)(Choice)(Choice.unapply)))(Subject.apply)(Subject.unapply))
 
   def index = Action {
     Ok(views.html.questions.choices.index(SubjectTB.findAll))

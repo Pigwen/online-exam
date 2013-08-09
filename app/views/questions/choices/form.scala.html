@@ -6,13 +6,14 @@
 		<div class="form-group">
 			<label for="title" class="col-lg-2 control-label">问题</label>
 			<div class="col-lg-10">
-				<textarea id="title" name="title" id="title" class="form-control" rows="3" placeholder="题目" required="required">@form("title").value</textarea>
+				<textarea id="title" name="title" id="title" class="form-control" rows="3" placeholder="题目"
+					required="required">@form("title").value</textarea>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="answer" class="col-lg-2 control-label">答案</label>
 			<div class="col-lg-10">
-				<input type="text" class="form-control" id="answer" name="answer" value="@form("answer").value" placeholder="答案" required="required"/>
+				<input type="text" class="form-control" id="answer" name="answer" value="@form("answer").value" placeholder="答案" required="required" />
 			</div>
 		</div>
 	</fieldset>
@@ -21,16 +22,19 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label"></label>
 			<div class="col-lg-10">
-				<input type="text" class="form-control" name="options[0].desc" value="" placeholder="选项1" required="required"/> <input
-					type="text" class="form-control" name="options[1].desc" value="" placeholder="选项2" required="required"/> <input
-					type="text" class="form-control" name="options[2].desc" value="" placeholder="选项3" /> <input
-					type="text" class="form-control" name="options[3].desc" value="" placeholder="选项4" />
+				<input type="text" class="form-control" name="options[0].desc" value="" placeholder="选项1"
+					required="required" /> <input type="hidden" name="options[0].id" /> <input type="text"
+					class="form-control" name="options[1].desc" value="" placeholder="选项2" required="required" />
+				<input type="hidden" name="options[1].id" /> <input type="text" class="form-control"
+					name="options[2].desc" value="" placeholder="选项3" /> <input type="hidden" name="options[2].id" />
+				<input type="text" class="form-control" name="options[3].desc" value="" placeholder="选项4" /> <input
+					type="hidden" name="options[3].id" />
 			</div>
 		</div>
 		<div class="form-group">
 			<div class="col-lg-offset-2 col-lg-10">
 				<button type="submit" class="btn btn-default">创建</button>
-				<input type="button" class="btn btn-default" onclick="history.back()" value="返回"/>
+				<input type="button" class="btn btn-default" onclick="history.back()" value="返回" />
 			</div>
 		</div>
 	</fieldset>

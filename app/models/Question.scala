@@ -16,6 +16,23 @@ object Db {
 
     def findAll = Db.database.withSession { implicit db: Session =>
       SubjectTB.map(c => c.id ~ c.title ~ c.answer).list.map(t => Subject(Some(t._1), t._2, t._3))
+      val q = for {
+        s <- SubjectTB
+        c <- ChoiceTB if s.id === c.subjectID
+      } yield (s, c)
+      import scala.collection.mutable.Map
+      val smap = Map[Long, Subject]()
+      val cmap = Map[Long, List[Choice]]() 
+      q.list.map {
+        case (s, t) =>
+          smap += ((s.id.get, s))
+          val choice = Choice(Some(t._1), t._2)
+          val clist = cmap.getOrElse(s.id.get, Nil)
+          cmap += ((s.id.get, choice :: clist))
+      }
+      smap.map {
+        t => t._2.copy(choices = cmap(t._1))
+      }
     }
 
     def create(s: Subject) = {
@@ -28,7 +45,7 @@ object Db {
     }
   }
 
-  case class Choice(description: String)
+  case class Choice(id: Option[Long] = None, description: String)
   object ChoiceTB extends Table[(Long, String, Long)]("CHOICES") {
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
     def description = column[String]("DESCRIPTION", O.NotNull)

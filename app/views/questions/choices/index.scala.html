@@ -1,37 +1,36 @@
-@(choices: Seq[Db.Subject]) @main("选择题") {
+@(subjects: Iterable[Db.Subject]) @main("选择题") {
 <div class="btn-group">
 	<a type="button" class="btn btn-default" href="@routes.Choices.createForm">创建</a>
 </div>
 
-<table class="table table-bordered table-striped table-hover">
-	<caption>选择题</caption>
-	<thead>
-		<tr>
-			<th>题目</th>
-			<th>选项</th>
-			<th>答案</th>
-		</tr>
-	</thead>
-	<tbody>
-		@choices.map {c =>
-		<tr>
-			<td>@c.title</td>
-			<td></td>
-			<td>@c.answer</td>
-		</tr>
-		}
-	</tbody>
-</table>
-
 <div class="accordion" id="choices_container">
-	@for(c <- choices) {
+	@for((s, index) <- subjects.zipWithIndex) {
 	<div class="accordion-group">
 		<div class="accordion-heading">
-			<a class="accordion-toggle" data-toggle="collapse" data-parent="#choices_container"
-				href="#choice_@c.id">@c.title</a>
+			<div class="row">
+				<div class="col-lg-10">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#choices_container"
+						href="#choice_@s.id">@(index + 1). @s.title</a>
+				</div>
+				<div class="col-lg-2">
+					<div class="col-lg-1">
+						<a class="accordion-toggle" href="#"><span class="glyphicon glyphicon-edit"></span></a>
+					</div>
+					<div class="col-lg-1">
+						<a class="accordion-toggle" href="#"><span class="glyphicon glyphicon-remove-sign"></span></a>
+					</div>
+				</div>
+			</div>
+
 		</div>
-		<div id="choice_@c.id" class="accordion-body collapse collapse">
-			<div class="accordion-inner">...</div>
+		<div id="choice_@s.id" class="accordion-body collapse collapse">
+			<div class="accordion-inner">
+				<div class="row">
+					@for(c <- s.choices.zipWithIndex) {
+						<div class="col-lg-3">@(c._2 + 1). @c._1.description</div>
+					}
+				</div>
+			</div>
 		</div>
 	</div>
 	}
