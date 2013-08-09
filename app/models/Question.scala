@@ -21,7 +21,9 @@ object Db {
     def create(s: Subject) = {
       Db.database.withTransaction { implicit db: Session =>
         val subjectId = SubjectTB returning (id) insert (s)
-        (ChoiceTB.description ~ ChoiceTB.subjectID) insertAll (s.choices.map { c => (c.description, subjectId) }: _*)
+        (ChoiceTB.description ~ ChoiceTB.subjectID) insertAll (s.choices.distinct.filterNot(_.description.isEmpty()).map { c => (c.description, subjectId) }: _*)
+        s.copy(id = Some(subjectId))
+        s
       }
     }
   }
