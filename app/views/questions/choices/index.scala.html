@@ -27,7 +27,7 @@
 			<div class="accordion-inner">
 				<div class="row">
 					@for(c <- s.choices.zipWithIndex) {
-						<div class="col-lg-3">@(c._2 + 1). @c._1.description</div>
+						<div class="col-lg-3">@((c._2 + 65).toChar). @c._1.description</div>
 					}
 				</div>
 			</div>
