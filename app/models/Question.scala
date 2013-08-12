@@ -50,7 +50,7 @@ object Db {
       subject.copy(choices = choices.toList)
     }
 
-    def create(s: Subject): Subject = {
+    def save(s: Subject): Subject = {
       Db.database.withTransaction { implicit db: Session =>
         val subjectId = s.id match {
           case None =>
@@ -62,6 +62,13 @@ object Db {
         }
         (ChoiceTB.description ~ ChoiceTB.subjectID) insertAll (s.choices.distinct.filterNot(_.description.isEmpty()).map { c => (c.description, subjectId) }:_*)
         s.copy(id = Some(subjectId))
+      }
+    }
+    
+    def delete(sid: Long) = {
+      Db.database.withTransaction { implicit db: Session =>
+        ChoiceTB.filter(_.subjectID === sid).delete
+        SubjectTB.filter(_.id === sid).delete
       }
     }
   }

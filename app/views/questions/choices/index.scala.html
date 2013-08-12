@@ -17,7 +17,9 @@
 						<a class="accordion-toggle" href="@routes.Choices.editForm(s.id.get)"><span class="glyphicon glyphicon-edit"></span></a>
 					</div>
 					<div class="col-lg-1">
-						<a class="accordion-toggle" href="#"><span class="glyphicon glyphicon-remove-sign"></span></a>
+						<form method="post" action="@routes.Choices.delete(s.id.get)">
+							<a class="accordion-toggle" href="#" onclick="$(this).closest('form').submit();return false;"><span class="glyphicon glyphicon-remove-sign"></span></a>
+						</form>
 					</div>
 				</div>
 			</div>

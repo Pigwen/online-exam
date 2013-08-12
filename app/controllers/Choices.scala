@@ -31,7 +31,7 @@ object Choices extends Controller {
         Ok(views.html.questions.choices.form(formWithError))
       },
       subject => {
-        SubjectTB.create(subject)
+        SubjectTB.save(subject)
         Redirect(routes.Choices.index)
       })
   }
@@ -42,5 +42,10 @@ object Choices extends Controller {
     val answer = f("answer").value
     val oid = f("options[0].desc").value
     Ok(views.html.questions.choices.form(f))
+  }
+  
+  def delete(id: Long) = Action { implicit request =>
+    SubjectTB.delete(id)
+    Redirect(routes.Choices.index)
   }
 }
