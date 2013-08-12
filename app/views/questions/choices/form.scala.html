@@ -22,13 +22,17 @@
 		<div class="form-group">
 			<label class="col-lg-2 control-label"></label>
 			<div class="col-lg-10">
-				<input type="text" class="form-control" name="options[0].desc" value="" placeholder="选项1"
-					required="required" /> <input type="hidden" name="options[0].id" /> <input type="text"
-					class="form-control" name="options[1].desc" value="" placeholder="选项2" required="required" />
-				<input type="hidden" name="options[1].id" /> <input type="text" class="form-control"
-					name="options[2].desc" value="" placeholder="选项3" /> <input type="hidden" name="options[2].id" />
-				<input type="text" class="form-control" name="options[3].desc" value="" placeholder="选项4" /> <input
-					type="hidden" name="options[3].id" />
+				<input type="text" class="form-control" name="options[0].desc" value="@form("options[0].desc").value" placeholder="选项1" required="required" /> 
+				<input type="hidden" name="options[0].id" value="@form("options[0].id").value" /> 
+				
+				<input type="text" class="form-control" name="options[1].desc" value="@form("options[1].desc").value" placeholder="选项2" required="required" /> 
+				<input type="hidden" name="options[1].id" value="@form("options[1].id").value"/> 
+				
+				<input type="text" class="form-control" name="options[2].desc" value="@form("options[2].desc").value" placeholder="选项3" /> 
+				<input type="hidden" name="options[2].id"	value="@form("options[2].id").value"/> 
+				
+				<input type="text" class="form-control"	name="options[3].desc" value="@form("options[3].desc").value" placeholder="选项4" /> 
+				<input type="hidden" name="options[3].id" value="@form("options[3].id").value"/>
 			</div>
 		</div>
 		<div class="form-group">

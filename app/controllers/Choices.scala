@@ -13,8 +13,9 @@ object Choices extends Controller {
     "title" -> nonEmptyText(1),
     "answer" -> nonEmptyText,
     "options" -> list(mapping(
-        "id" -> optional(longNumber),
-        "desc" -> text)(Choice)(Choice.unapply)))(Subject.apply)(Subject.unapply))
+      "id" -> optional(longNumber),
+      "desc" -> text,
+      "subjectID" -> optional(longNumber))(Choice)(Choice.unapply)))(Subject.apply)(Subject.unapply))
 
   def index = Action {
     Ok(views.html.questions.choices.index(SubjectTB.findAll))
@@ -33,5 +34,13 @@ object Choices extends Controller {
         SubjectTB.create(subject)
         Redirect(routes.Choices.index)
       })
+  }
+
+  def editForm(id: Long) = Action { implicit request =>
+    val subject = SubjectTB.findOne(id)
+    val f = form.fillAndValidate(subject)
+    val answer = f("answer").value
+    val oid = f("options[0].desc").value
+    Ok(views.html.questions.choices.form(f))
   }
 }

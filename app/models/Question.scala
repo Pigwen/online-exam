@@ -3,6 +3,7 @@ package models
 import play.api.Play.current
 import scala.slick.driver.MySQLDriver.simple._
 import play.api.db._
+import scala.collection.mutable.ListBuffer
 
 object Db {
   private lazy val database = Database.forDataSource(DB.getDataSource())
@@ -22,36 +23,56 @@ object Db {
       } yield (s, c)
       import scala.collection.mutable.Map
       val smap = Map[Long, Subject]()
-      val cmap = Map[Long, List[Choice]]() 
+      val cmap = Map[Long, List[Choice]]()
       q.list.map {
-        case (s, t) =>
+        case (s, c) =>
           smap += ((s.id.get, s))
-          val choice = Choice(Some(t._1), t._2)
-          val clist = cmap.getOrElse(s.id.get, Nil)
-          cmap += ((s.id.get, choice :: clist))
+          val clist = cmap.getOrElse(c.subjectID.get, Nil)
+          cmap += ((c.subjectID.get, c :: clist))
       }
       smap.map {
         t => t._2.copy(choices = cmap(t._1))
       }
     }
 
-    def create(s: Subject) = {
+    def findOne(id: Long): Subject = Db.database.withSession { implicit db: Session =>
+      val q = for {
+        s <- SubjectTB if s.id === id
+        c <- ChoiceTB if s.id === c.subjectID
+      } yield (s, c)
+      val choices: ListBuffer[Choice] = ListBuffer()
+      var subject: Subject = Subject();
+      q.list.map {
+        case (s, c) =>
+          choices += c
+          subject = s
+      }
+      subject.copy(choices = choices.toList)
+    }
+
+    def create(s: Subject): Subject = {
       Db.database.withTransaction { implicit db: Session =>
-        val subjectId = SubjectTB returning (id) insert (s)
-        (ChoiceTB.description ~ ChoiceTB.subjectID) insertAll (s.choices.distinct.filterNot(_.description.isEmpty()).map { c => (c.description, subjectId) }: _*)
+        val subjectId = s.id match {
+          case None =>
+            SubjectTB returning (id) insert (s)
+          case Some(sid) =>
+            SubjectTB.filter(_.id === sid) update (s)
+            ChoiceTB.filter(_.subjectID === sid) delete(db)
+            sid
+        }
+        (ChoiceTB.description ~ ChoiceTB.subjectID) insertAll (s.choices.distinct.filterNot(_.description.isEmpty()).map { c => (c.description, subjectId) }:_*)
         s.copy(id = Some(subjectId))
-        s
       }
     }
   }
 
-  case class Choice(id: Option[Long] = None, description: String)
-  object ChoiceTB extends Table[(Long, String, Long)]("CHOICES") {
+  case class Choice(id: Option[Long] = None, description: String, subjectID: Option[Long])
+  object ChoiceTB extends Table[Choice]("CHOICES") {
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
     def description = column[String]("DESCRIPTION", O.NotNull)
     def subjectID = column[Long]("SUBJECT_ID", O.NotNull)
     def subject = foreignKey("SUBJECT_FK", subjectID, SubjectTB)(_.id)
-    def * = id ~ description ~ subjectID
+    def * = id.? ~ description ~ subjectID.? <> (Choice, Choice.unapply _)
     def idx = index("idx_a", (subjectID, description), unique = true)
   }
 
