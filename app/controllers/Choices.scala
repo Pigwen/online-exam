@@ -2,7 +2,7 @@ package controllers
 
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import models.db._
+import models.store._
 import play.api.data.Form
 import play.api.data.Forms._
 import views.html.defaultpages.badRequest
@@ -45,7 +45,7 @@ object Choices extends Controller {
     val oid = f("options[0].desc").value
     Ok(views.html.questions.choices.form(f))
   }
-  
+
   def delete(id: Long) = Action { implicit request =>
     SubjectTB.delete(id)
     Redirect(routes.Choices.index)
