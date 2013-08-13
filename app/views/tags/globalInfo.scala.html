@@ -1,0 +1,10 @@
+@(implicit flash: Flash)
+
+<div class="row">
+@flash.get("success").map { msg =>
+		<div class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			@msg
+		</div>
+}
+</div>

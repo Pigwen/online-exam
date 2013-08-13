@@ -1,4 +1,4 @@
-@(implicit form: Form[Subject]) @main("创建选择题") {
+@(form: Form[Subject])(implicit flash: Flash) @main("创建选择题") {
 <form id="form" action="@routes.Choices.create" class="form-horizontal" method="post">
 	<fieldset>
 		<legend>题目</legend>
@@ -8,14 +8,14 @@
 			<div class="col-lg-10">
 				<textarea id="title" name="title" id="title" class="form-control" rows="3" placeholder="题目"
 					required="required">@form("title").value</textarea>
-				@tags.fieldError("title")
+				@tags.fieldError("title")(form)
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="answer" class="col-lg-2 control-label">答案</label>
 			<div class="col-lg-10">
 				<input type="text" class="form-control" id="answer" name="answer" value="@form("answer").value" placeholder="答案"  required="required"/>
-				@tags.fieldError("answer")
+				@tags.fieldError("answer")(form)
 			</div>
 		</div>
 	</fieldset>

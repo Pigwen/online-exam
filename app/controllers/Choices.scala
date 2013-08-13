@@ -19,7 +19,7 @@ object Choices extends Controller {
       "desc" -> text,
       "subjectID" -> optional(longNumber))(Choice)(Choice.unapply)))(Subject.apply)(Subject.unapply))
 
-  def index = Action {
+  def index = Action { implicit request =>
     Ok(views.html.questions.choices.index(SubjectTB.findAll))
   }
 
@@ -34,7 +34,7 @@ object Choices extends Controller {
       },
       subject => {
         SubjectTB.save(subject)
-        Redirect(routes.Choices.index)
+        Redirect(routes.Choices.index).flashing("success" -> "保存成功")
       })
   }
 
@@ -46,6 +46,6 @@ object Choices extends Controller {
 
   def delete(id: Long) = Action { implicit request =>
     SubjectTB.delete(id)
-    Redirect(routes.Choices.index)
+    Redirect(routes.Choices.index).flashing("success" -> "删除成功")
   }
 }

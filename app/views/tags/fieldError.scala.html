@@ -1,4 +1,4 @@
-@(key: String)(implicit form: Form[_])
+@(key: String)(form: Form[_])
 
 @for(e <- form(key).errors) {
 	<label class="help-block alert alert-danger" for="title">

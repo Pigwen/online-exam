@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit flash: Flash)
 
 <!DOCTYPE html>
 
@@ -46,6 +46,7 @@
 	</div>
 
 	<div class="container">
+		@tags.globalInfo(flash)
 		@content
 	</div>
 
