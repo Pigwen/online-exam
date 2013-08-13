@@ -41,8 +41,6 @@ object Choices extends Controller {
   def editForm(id: Long) = Action { implicit request =>
     val subject = SubjectTB.findOne(id)
     val f = form.fillAndValidate(subject)
-    val answer = f("answer").value
-    val oid = f("options[0].desc").value
     Ok(views.html.questions.choices.form(f))
   }
 
