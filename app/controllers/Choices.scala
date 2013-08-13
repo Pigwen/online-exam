@@ -2,10 +2,12 @@ package controllers
 
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import models.Db._
+import models.db._
 import play.api.data.Form
 import play.api.data.Forms._
 import views.html.defaultpages.badRequest
+import models.Choice
+import models.Subject
 
 object Choices extends Controller {
   private val form = Form(mapping(
