@@ -21,7 +21,6 @@ package object store {
     def * = id.? ~ title ~ answer <> (t => Subject(t._1, t._2, t._3), { s: Subject => Some((s.id, s.title, s.answer)) })
 
     def findAll = database.withSession { implicit db: Session =>
-      SubjectTB.map(c => c.id ~ c.title ~ c.answer).list.map(t => Subject(Some(t._1), t._2, t._3))
       val q = for {
         s <- SubjectTB
         c <- ChoiceTB if s.id === c.subjectID
@@ -29,18 +28,41 @@ package object store {
 
       import scala.collection.mutable.Map
       val result = q.list.foldLeft((Map[Long, Subject](), Map[Long, List[Choice]]())) {
-        (tuple, el) =>
-          tuple._1 += ((el._1.id.get, el._1))
-
-          val clist = tuple._2.getOrElse(el._2.subjectID.get, Nil)
-          tuple._2 += ((el._2.subjectID.get, el._2 :: clist))
-          tuple
+        case ((smap, cmap), (s, c)) =>
+          smap += ((s.id.get, s))
+          val clist = cmap.getOrElse(c.subjectID.get, Nil)
+          cmap += ((c.subjectID.get, c :: clist))
+          (smap, cmap)
       }
 
       result._1 map {
         case (sid, subject) =>
           subject.copy(choices = result._2(sid))
       }
+    }
+
+    def find(pageable: Pageable): Page[Subject] = database.withTransaction { implicit db: Session =>
+      val subjectQuery = SubjectTB.drop(pageable.offset).take(pageable.pageSize)
+      val q = for {
+        s <- subjectQuery
+        c <- ChoiceTB if s.id === c.subjectID
+      } yield (s, c)
+
+      import scala.collection.mutable.Map
+      val count = Query(SubjectTB.length).first
+      val result = q.foldLeft((Map[Long, Subject](), Map[Long, List[Choice]]())) {
+        case ((smap, cmap), (s, c)) =>
+          smap += ((s.id.get, s))
+          val clist = cmap.getOrElse(c.subjectID.get, Nil)
+          cmap += ((c.subjectID.get, c :: clist))
+          (smap, cmap)
+      }
+
+      val data = result._1 map {
+        case (sid, subject) =>
+          subject.copy(choices = result._2(sid))
+      }
+      new Page(pageable, count, data.toSeq: _*)
     }
 
     def findOne(id: Long): Subject = database.withSession { implicit db: Session =>

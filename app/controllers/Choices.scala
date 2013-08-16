@@ -20,7 +20,13 @@ object Choices extends Controller {
       "subjectID" -> optional(longNumber))(Choice)(Choice.unapply)))(Subject.apply)(Subject.unapply))
 
   def index = Action { implicit request =>
-    Ok(views.html.questions.choices.index(SubjectTB.findAll))
+    val indexForm = Form(("pageNumber" -> optional(number)))
+    indexForm.bindFromRequest.fold(
+      formWithError => Ok(views.html.questions.choices.index(SubjectTB.find(new Pageable()))),
+      pageNumber => {
+        val pageable = pageNumber.fold(Pageable())(Pageable(_))
+        Ok(views.html.questions.choices.index(SubjectTB.find(pageable)))
+      })
   }
 
   def createForm = Action { implicit request =>

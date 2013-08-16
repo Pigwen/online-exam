@@ -1,4 +1,4 @@
-@(subjects: Iterable[Subject])(implicit flash: Flash) @main("选择题") {
+@(subjects: store.Page[Subject])(implicit flash: Flash) @main("选择题") {
 <div class="btn-group">
 	<a type="button" class="btn btn-default" href="@routes.Choices.createForm">创建</a>
 </div>
@@ -10,7 +10,7 @@
 			<div class="row">
 				<div class="col-lg-10">
 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#choices_container"
-						href="#choice_@s.id">@(index + 1). @s.title</a>
+						href="#choice_@s.id">@(index + subjects.pageable.offset + 1). @s.title</a>
 				</div>
 				<div class="col-lg-2">
 					<div class="col-lg-1">
@@ -36,5 +36,19 @@
 		</div>
 	</div>
 	}
+</div>
+
+<div class="container">
+	<ul class="pagination">
+	  <li><a href="?pageNumber=1">&laquo;</a></li>
+	  @for(i <- 0 until subjects.totalPages) {
+	  	@if(i + 1 == subjects.currentPageNumber) {
+		  	<li class="active"><span>@(i + 1)<span class="sr-only"></span></span></li>
+	  	} else {
+	  		<li><a href="?pageNumber=@(i + 1)">@(i + 1)</a></li>
+	  	}
+	  }
+	  <li><a href="?pageNumber=@subjects.totalPages">&raquo;</a></li>
+	</ul>
 </div>
 }
